@@ -1,5 +1,4 @@
 name: Continuous Integration
-run-name: ${{ github.actor }} is learning GitHub Actions
 on:
   push:
     branches:
@@ -14,3 +13,8 @@ jobs:
           node-version: '18'
       - run: npm install
       - run: npm run build
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: smart-home
+          path: build
