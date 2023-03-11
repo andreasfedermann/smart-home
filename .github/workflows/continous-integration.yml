@@ -18,3 +18,19 @@ jobs:
         with:
           name: smart-home
           path: build
+
+  deploy-dev:
+    runs-on: ubuntu-latest
+    environment: development
+    needs: build
+    steps:
+      - run: echo deploying dev envrionment
+
+  deploy-prod:
+    runs-on: ubuntu-latest
+    environment: production
+    needs: [build, deploy-dev]
+    steps:
+      - run: echo deploying prod environment
+
+      
