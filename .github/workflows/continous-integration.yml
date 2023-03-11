@@ -26,11 +26,46 @@ jobs:
     steps:
       - run: echo deploying dev envrionment
 
-  deploy-prod:
+  post-deployment-tests-dev:
     runs-on: ubuntu-latest
-    environment: production
+    environment: development
     needs: [build, deploy-dev]
     steps:
-      - run: echo deploying prod environment
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+      - run: |
+          pip install robotframework-browser==14.4.1
+          pip install rpaframework==22.0.0
+          rfbrowser init
+          python -m robot --report NONE --outputdir output --logtitle "Task log" ./acceptance-tests/tasks.robot
+
+  # deploy-stg-wave-1:
+  #   runs-on: ubuntu-latest
+  #   environment: staging-wave-1
+  #   needs: [build, deploy-dev, post-deployment-tests-dev]
+  #   steps:
+  #     - run: echo deploying stg envrionment
+
+  # post-deployment-tests:
+  #   runs-on: ubuntu-latest
+  #   environment: staging-wave-1
+  #   needs: [build, deploy-dev, deploy-stg-wave-1]
+  #   steps:
+  #     - run: running post deployment tests on staging wave-1
+
+  # deploy-stg-wave-2:
+  #   runs-on: ubuntu-latest
+  #   environment: staging-wave-2
+  #   needs: build
+  #   steps:
+  #     - run: echo deploying stg envrionment
+
+  # deploy-prod:
+  #   runs-on: ubuntu-latest
+  #   environment: production
+  #   needs: [build, deploy-dev]
+  #   steps:
+  #     - run: echo deploying prod environment
 
       
