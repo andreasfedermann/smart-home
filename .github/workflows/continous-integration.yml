@@ -31,6 +31,7 @@ jobs:
     environment: development
     needs: [build, deploy-dev]
     steps:
+      - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
         with:
           python-version: '3.9'
@@ -38,14 +39,18 @@ jobs:
           pip install robotframework-browser==14.4.1
           pip install rpaframework==22.0.0
           rfbrowser init
-          python -m robot --report NONE --outputdir output --logtitle "Task log" ./acceptance-tests/tasks.robot
+          python -m robot --outputdir output --logtitle "Task log" ./acceptance-tests/tasks.robot
+      - uses: actions/upload-artifact@v3
+        with:
+          name: acceptance-test-dev
+          path: output
 
-  # deploy-stg-wave-1:
-  #   runs-on: ubuntu-latest
-  #   environment: staging-wave-1
-  #   needs: [build, deploy-dev, post-deployment-tests-dev]
-  #   steps:
-  #     - run: echo deploying stg envrionment
+  deploy-stg-wave-1:
+    runs-on: ubuntu-latest
+    environment: staging-wave-1
+    needs: [build, deploy-dev, post-deployment-tests-dev]
+    steps:
+      - run: echo deploying stg envrionment
 
   # post-deployment-tests:
   #   runs-on: ubuntu-latest
